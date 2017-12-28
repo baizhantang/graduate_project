@@ -2,6 +2,7 @@ package com.sunhao.graduate_project.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sunhao.graduate_project.util.GenerateUUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class PhotoService {
+public class FileService {
 
 
     public Object savePhoto(MultipartFile file) {
         if (!file.isEmpty()) {
             String path = null;
-            path = "F:\\upload\\" + file.getOriginalFilename();
+            path = "F:\\upload\\" + GenerateUUID.getUUID(file.getOriginalFilename());
             try {
                 BufferedOutputStream out = new BufferedOutputStream(
                         new FileOutputStream(new File(path)));
