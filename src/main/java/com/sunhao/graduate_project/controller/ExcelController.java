@@ -22,7 +22,7 @@ public class ExcelController {
     private ExcelService excelService;
 
     @PostMapping(value = "/excelParse")
-    public String importExcel(@RequestParam("file") MultipartFile excelFile)
+    public List<Map<String, String>> importExcel(@RequestParam("file") MultipartFile excelFile)
             throws  IOException{
         return excelService.excelParse(excelFile);
     }

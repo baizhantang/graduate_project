@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class UserService {
+public class LoginService {
 
     @Autowired
     private UserRepository userRepository;

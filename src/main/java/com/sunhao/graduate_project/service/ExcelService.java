@@ -12,16 +12,21 @@ import java.util.Map;
 
 @Service
 public class ExcelService {
-    public String excelParse(@RequestParam("file") MultipartFile excelFile) throws IOException {
+    public List<Map<String, String>> excelParse(@RequestParam("file") MultipartFile excelFile) throws IOException {
         if (null == excelFile) {
             String result = "模板文件为空,请选择文件";
-            return result;
+            return null;
+        }
+
+        int indexSuffix = excelFile.getOriginalFilename().indexOf('.');
+        if (!"xls".equals(excelFile.getOriginalFilename().substring(indexSuffix+1))) {
+            String result = "文件类型错误";
+            return null;
         }
 
         InputStream fis = excelFile.getInputStream();
         List<Map<String, String>> data = ExcelParse.parseExcel(fis);
 
-        System.out.println(data);
-        return "success";
+        return data;
     }
 }

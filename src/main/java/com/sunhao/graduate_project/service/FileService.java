@@ -14,7 +14,7 @@ import java.util.Map;
 public class FileService {
 
 
-    public Object savePhoto(MultipartFile file) {
+    public String saveFile(MultipartFile file) {
         if (!file.isEmpty()) {
             String path = null;
             path = "F:\\upload\\" + GenerateUUID.getUUID(file.getOriginalFilename());
@@ -34,15 +34,15 @@ public class FileService {
                 return null;
             }
 
-            Map<String, String> okMap = new HashMap<>();
+//            Map<String, String> okMap = new HashMap<>();
+//
+//            okMap.put("path", path);
+//
+//            String ok = JSON.toJSONString(okMap);
+//
+//            JSONObject jsonOk = JSON.parseObject(ok);
 
-            okMap.put("path", path);
-
-            String ok = JSON.toJSONString(okMap);
-
-            JSONObject jsonOk = JSON.parseObject(ok);
-
-            return jsonOk;
+            return path;
         } else {
             System.out.println("文件为空");
             return null;

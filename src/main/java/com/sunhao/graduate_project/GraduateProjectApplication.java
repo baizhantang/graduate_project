@@ -32,9 +32,9 @@ public class GraduateProjectApplication {
 	public MultipartConfigElement multipartConfigElement(){
 		MultipartConfigFactory factory = new MultipartConfigFactory();
 		//设置上传文件大小限制
-		factory.setMaxFileSize("25MB");
+		factory.setMaxFileSize("250MB");
 		//设置上传总数据大小
-		factory.setMaxRequestSize("25MB");
+		factory.setMaxRequestSize("250MB");
 		return factory.createMultipartConfig();
 	}
 }
