@@ -13,4 +13,10 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
 
     @Query("select task from Task task where task.teacherName=?1 and task.taskStatus is not null group by task.taskNumber")
     public List<Task> findHistoryTaskByTeacherName(String teacherName);
+
+    public List<Task> findByTaskNumber(String taskNumber);
+
+    public List<Task> findByStudentNumber( String studentNumber);
+
+    public Task findByTaskNumberAndStudentNumber(String taskNumber, String studentNumber);
 }

@@ -64,4 +64,60 @@ public class SearchTaskService {
         JSONObject resultJ = JSON.parseObject(resultS);
         return resultJ;
     }
+
+    public Object getTaskInfo(String taskNumber) {
+        List<Task> data = taskRepository.findByTaskNumber(taskNumber);
+        Map<String, List<ShowTask>> result = new HashMap<>();
+
+        List<ShowTask> success = new ArrayList<>();
+        List<ShowTask> nodata = new ArrayList<>();
+
+        for (Task temp :
+                data) {
+            if (temp.getTaskStatus() != null) {
+                success.add(TranslateForShowTask.translate(temp));
+            } else {
+                nodata.add(TranslateForShowTask.translate(temp));
+            }
+        }
+
+        result.put("successed", success);
+        result.put("nodata", nodata);
+
+        String resultS = JSON.toJSONString(result);
+
+        JSONObject resultJ = JSON.parseObject(resultS);
+        return resultJ;
+
+    }
+
+    public Object getTaskByStudent(String studentNumber) {
+        List<Task> data = taskRepository.findByStudentNumber(studentNumber);
+        System.out.println(data);
+        Map<String, List<ShowTask>> result = new HashMap<>();
+
+        List<ShowTask> success = new ArrayList<>();
+        List<ShowTask> nodata = new ArrayList<>();
+
+        for (Task temp :
+                data) {
+            if (temp.getTaskStatus() != null) {
+                success.add(TranslateForShowTask.translate(temp));
+            } else {
+                nodata.add(TranslateForShowTask.translate(temp));
+            }
+        }
+
+        result.put("successed", success);
+        result.put("nodata", nodata);
+
+        System.out.println(nodata);
+
+        String resultS = JSON.toJSONString(result);
+
+        JSONObject resultJ = JSON.parseObject(resultS);
+        return resultJ;
+
+    }
+
 }
