@@ -31,6 +31,9 @@ public class TaskService {
     @Autowired
     private FileService fileService;
 
+    private static final String hostname = "120.79.141.175"; //服务器环境
+//    private static final String hostname = "localhost"; //本地环境
+
     public void saveTask(String name,
                          String describe,
                          String deadline,
@@ -45,30 +48,18 @@ public class TaskService {
         String taskNumber = UUID.randomUUID().toString();
         personList = excelService.excelParse(persons);
         if (personList == null) {
-            out.flush();
-            out.println("<script type='text/javascript'>");
-            out.println("alert('file error!');");
-            out.println("window.location.href = 'http://120.79.141.175/addTask.html';");
-            out.println("</script>");
+            returnFail(out, "file error", "addTask.html");
             return;
         }
         String path = fileService.saveFile(template);
         if (path == null) {
-            out.flush();
-            out.println("<script type='text/javascript'>");
-            out.println("alert('file error!');");
-            out.println("window.location.href = 'http://120.79.141.175/addTask.html';");
-            out.println("</script>");
+            returnFail(out, "file error", "addTask.html");
             return;
         }
         Date date = new TranslateForTime().translate(deadline);
         Date dateCurrent = new Date(new java.util.Date().getTime());
         if (date.before(dateCurrent)) {
-            out.flush();
-            out.println("<script type='text/javascript'>");
-            out.println("alert('time error!');");
-            out.println("window.location.href = 'http://120.79.141.175/addTask.html';");
-            out.println("</script>");
+            returnFail(out, "time error", "addTask.html");
             return;
         }
 
@@ -88,11 +79,7 @@ public class TaskService {
             taskRepository.save(task);
         }
 
-        out.flush();
-        out.println("<script type='text/javascript'>");
-        out.println("alert('success!');");
-        out.println("window.location.href = 'http://120.79.141.175/history.html';");
-        out.println("</script>");
+        returnSuccess(out, "history.html");
         return;
     }
 
@@ -108,9 +95,8 @@ public class TaskService {
         String path = fileService.saveFile(homework);
         if (path == null) {
             out.flush();
-
             out.println("alert('file error!');");
-            out.println("window.location.href = 'http://120.79.141.175/studentIndex.html?studentNumber=" + studentNumber + "';");
+            out.println("window.location.href = 'http://" + hostname + "/studentIndex.html?studentNumber=" + studentNumber + "';");
             out.println("</script>");
             return;
         }
@@ -126,8 +112,24 @@ public class TaskService {
         out.flush();
         out.println("<script type='text/javascript'>");
         out.println("alert('success!');");
-        out.println("window.location.href = 'http://120.79.141.175/studentIndex.html?studentNumber=" + task.getStudentNumber() + "';");
+        out.println("window.location.href = 'http://" + hostname + "/studentIndex.html?studentNumber=" + task.getStudentNumber() + "';");
         out.println("</script>");
         return;
+    }
+
+    public void returnSuccess(PrintWriter out, String destination) {
+        out.flush();
+        out.println("<script type='text/javascript'>");
+        out.println("alert('success!');");
+        out.println("window.location.href = 'http://" + hostname + "/" + destination + "';");
+        out.println("</script>");
+    }
+
+    public void returnFail(PrintWriter out, String failType, String destination) {
+        out.flush();
+        out.println("<script type='text/javascript'>");
+        out.println("alert('" + failType + "!');");
+        out.println("window.location.href = 'http://" + hostname + "/" + destination + "';");
+        out.println("</script>");
     }
 }

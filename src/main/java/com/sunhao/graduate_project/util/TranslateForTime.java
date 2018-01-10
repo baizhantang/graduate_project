@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TranslateForTime {
+    /**
+     * 把前端传回的时间数据转换为MySQL的date格式
+     */
     private Map<String, String> month = new HashMap<>();
     private String suffix = " 23:59:59";
 

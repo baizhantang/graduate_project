@@ -30,9 +30,9 @@ public class SearchTaskService {
 
         Date dateCurrent = new Date(new java.util.Date().getTime());
         for (Task temp :
-                data) {
+                data) { //判断返回的结果数据是否过了截止日期，分开封装返回
             if (temp.getDeadline().after(dateCurrent)) {
-                afters.add(TranslateForShowTask.translate(temp));
+                afters.add(TranslateForShowTask.translate(temp)); //把Task（数据库返回）转换为前端友好的ShowTask
             } else {
                 befores.add(TranslateForShowTask.translate(temp));
             }
@@ -73,7 +73,7 @@ public class SearchTaskService {
         List<ShowTask> nodata = new ArrayList<>();
 
         for (Task temp :
-                data) {
+                data) { //判断返回的结果数据是否上传了数据，分开封装返回
             if (temp.getTaskStatus() != null) {
                 success.add(TranslateForShowTask.translate(temp));
             } else {

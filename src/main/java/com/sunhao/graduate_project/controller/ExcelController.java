@@ -21,6 +21,12 @@ public class ExcelController {
     @Autowired
     private ExcelService excelService;
 
+    /**
+     * 解析人员名单Excel文件
+     * @param excelFile
+     * @return 返回人员列表
+     * @throws IOException
+     */
     @PostMapping(value = "/excelParse")
     public List<Map<String, String>> importExcel(@RequestParam("file") MultipartFile excelFile)
             throws  IOException{

@@ -20,21 +20,41 @@ public class SearchTaskController {
     @Autowired
     private SearchTaskService searchTaskService;
 
+    /**
+     * 查询正在进行中的记录（过期）
+     * @param teacherName
+     * @return
+     */
     @PostMapping(value = "/getProcessingTask")
     public Object getTask(@RequestParam("teacherName") String teacherName) {
         return searchTaskService.getTask(teacherName);
     }
 
+    /**
+     * 获取所有的任务记录
+     * @param teacherName
+     * @return
+     */
     @PostMapping(value = "/getHistoryTask")
     public Object getHistoryTask(@RequestParam("teacherName") String teacherName) {
         return searchTaskService.getHistoryTask(teacherName);
     }
 
+    /**
+     * 获取某个任务的详情
+     * @param taskNumber
+     * @return
+     */
     @PostMapping(value = "/getTaskInfo")
     public Object getTaskInfo(@RequestParam("taskNumber") String taskNumber) {
         return searchTaskService.getTaskInfo(taskNumber);
     }
 
+    /**
+     * 通过学号查询相关任务
+     * @param studentNumber
+     * @return
+     */
     @PostMapping(value = "/getTaskByStudent")
     public Object getTaskByStudent(@RequestParam("studentNumber") String studentNumber) {
         return searchTaskService.getTaskByStudent(studentNumber);

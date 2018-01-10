@@ -13,7 +13,11 @@ import java.util.Map;
 @Service
 public class FileService {
 
-
+    /**
+     * 上传文件
+     * @param file
+     * @return
+     */
     public String saveFile(MultipartFile file) {
         if (!file.isEmpty()) {
             String path = null;

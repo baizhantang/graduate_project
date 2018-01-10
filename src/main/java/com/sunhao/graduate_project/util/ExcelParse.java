@@ -13,7 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class ExcelParse {
+    /**
+     * 解析人员名单Excel
+     * @param fis
+     * @return
+     */
     public static List<Map<String, String>> parseExcel(InputStream fis) {
         List<Map<String, String>> data = new ArrayList<Map<String, String>>();
         try {
