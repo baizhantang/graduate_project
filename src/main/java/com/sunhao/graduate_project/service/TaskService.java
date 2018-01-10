@@ -48,18 +48,26 @@ public class TaskService {
             out.flush();
             out.println("<script type='text/javascript'>");
             out.println("alert('file error!');");
-            out.println("window.location.href = 'http://127.0.0.1:8020/test/addTask.html';");
+            out.println("window.location.href = 'http://120.79.141.175/addTask.html';");
             out.println("</script>");
             return;
         }
         String path = fileService.saveFile(template);
+        if (path == null) {
+            out.flush();
+            out.println("<script type='text/javascript'>");
+            out.println("alert('file error!');");
+            out.println("window.location.href = 'http://120.79.141.175/addTask.html';");
+            out.println("</script>");
+            return;
+        }
         Date date = new TranslateForTime().translate(deadline);
         Date dateCurrent = new Date(new java.util.Date().getTime());
         if (date.before(dateCurrent)) {
             out.flush();
             out.println("<script type='text/javascript'>");
             out.println("alert('time error!');");
-            out.println("window.location.href = 'http://127.0.0.1:8020/test/addTask.html';");
+            out.println("window.location.href = 'http://120.79.141.175/addTask.html';");
             out.println("</script>");
             return;
         }
@@ -75,6 +83,7 @@ public class TaskService {
             task.setStudentNumber(person.get("学号"));
             task.setTemplatePath(path);
             task.setTeacherName("孙昊");
+            task.setCreateTime(dateCurrent);
 
             taskRepository.save(task);
         }
@@ -82,7 +91,42 @@ public class TaskService {
         out.flush();
         out.println("<script type='text/javascript'>");
         out.println("alert('success!');");
-        out.println("window.location.href = 'http://127.0.0.1:8020/test/processing.html?__hbt=1514535155870';");
+        out.println("window.location.href = 'http://120.79.141.175/history.html';");
+        out.println("</script>");
+        return;
+    }
+
+    public void saveFile(String taskNumber,
+                         String studentNumber,
+                         String describe,
+                         MultipartFile homework,
+                         HttpServletResponse response) throws IOException {
+        response.setContentType("text/html; charset=UTF-8");
+
+        PrintWriter out = response.getWriter();
+
+        String path = fileService.saveFile(homework);
+        if (path == null) {
+            out.flush();
+
+            out.println("alert('file error!');");
+            out.println("window.location.href = 'http://120.79.141.175/studentIndex.html?studentNumber=" + studentNumber + "';");
+            out.println("</script>");
+            return;
+        }
+
+        Task task = taskRepository.findByTaskNumberAndStudentNumber(taskNumber, studentNumber);
+
+        System.out.println(task);
+        task.setRemark(describe);
+        task.setResultPath(path);
+        task.setTaskStatus("ok");
+        taskRepository.save(task);
+
+        out.flush();
+        out.println("<script type='text/javascript'>");
+        out.println("alert('success!');");
+        out.println("window.location.href = 'http://120.79.141.175/studentIndex.html?studentNumber=" + task.getStudentNumber() + "';");
         out.println("</script>");
         return;
     }

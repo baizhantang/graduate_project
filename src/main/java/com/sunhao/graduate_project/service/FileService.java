@@ -17,7 +17,10 @@ public class FileService {
     public String saveFile(MultipartFile file) {
         if (!file.isEmpty()) {
             String path = null;
-            path = "F:\\upload\\" + GenerateUUID.getUUID(file.getOriginalFilename());
+            String usePath = GenerateUUID.getUUID(file.getOriginalFilename());
+            path = "C:\\Users\\Administrator\\Desktop\\apache-tomcat-7.0.82\\webapps\\ROOT\\file\\"  + usePath; //服务器配置
+//            path = "C:\\Users\\syhc\\Documents\\HBuilderProject\\test\\file\\" + usePath; //家配置
+//            path = "F:\\nutStore\\HBuilderProject\\test\\file\\" + usePath;  //办公室配置
             try {
                 BufferedOutputStream out = new BufferedOutputStream(
                         new FileOutputStream(new File(path)));
@@ -42,7 +45,7 @@ public class FileService {
 //
 //            JSONObject jsonOk = JSON.parseObject(ok);
 
-            return path;
+            return usePath;
         } else {
             System.out.println("文件为空");
             return null;

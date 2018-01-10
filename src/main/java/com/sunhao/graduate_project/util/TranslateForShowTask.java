@@ -13,6 +13,12 @@ public class TranslateForShowTask {
         showTask.setTeacherName(template.getTeacherName());
         showTask.setDeadline(template.getDeadline().toLocalDate());
         showTask.setTemplatePath(template.getTemplatePath());
+        showTask.setTaskNumber(template.getTaskNumber());
+        showTask.setStudentName(template.getStudentName());
+        showTask.setStudentNumber(template.getStudentNumber());
+        showTask.setDoStatus(template.getTaskStatus());
+        showTask.setResultPath(template.getResultPath());
+        showTask.setRemark(template.getRemark());
 
         return showTask;
     }

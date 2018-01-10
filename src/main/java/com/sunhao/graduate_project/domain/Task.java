@@ -15,11 +15,14 @@ public class Task {
     private String taskName;
     private String taskDescribe;
     private String templatePath;
+    private String resultPath;
     private String teacherName;
     private String studentName;
     private String studentNumber;
     private Date deadline;
+    private Date createTime;
     private String taskStatus;
+    private String remark;
 
     public Task() {
     }
@@ -102,5 +105,29 @@ public class Task {
 
     public void setTaskStatus(String taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getResultPath() {
+        return resultPath;
+    }
+
+    public void setResultPath(String resultPath) {
+        this.resultPath = resultPath;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
