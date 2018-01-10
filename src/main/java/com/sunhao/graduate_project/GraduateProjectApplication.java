@@ -46,7 +46,4 @@ public class GraduateProjectApplication extends SpringBootServletInitializer imp
 		return factory.createMultipartConfig();
 	}
 
-	public void test() {
-		System.out.println("我猜测，这个commit是用来记录一个分支的工作状况，然后需要合并的时候才需要push！ 验证一下！");
-	}
 }
