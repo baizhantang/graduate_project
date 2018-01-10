@@ -17,6 +17,12 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
+    /**
+     * 登录
+     * @param username
+     * @param password
+     * @return
+     */
     @PostMapping(value = "/login")
     public Object accountIsOk(@RequestParam("username") String username,
                               @RequestParam("password") String password) {

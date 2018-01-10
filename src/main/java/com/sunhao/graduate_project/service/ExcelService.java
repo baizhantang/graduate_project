@@ -10,8 +10,12 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class ExcelService {
+    /**
+     * 解析人员名单
+     */
     public List<Map<String, String>> excelParse(@RequestParam("file") MultipartFile excelFile) throws IOException {
         if (null == excelFile) {
             String result = "模板文件为空,请选择文件";
@@ -25,7 +29,7 @@ public class ExcelService {
         }
 
         InputStream fis = excelFile.getInputStream();
-        List<Map<String, String>> data = ExcelParse.parseExcel(fis);
+        List<Map<String, String>> data = ExcelParse.parseExcel(fis); //调用工具类进行解析
 
         return data;
     }

@@ -5,6 +5,11 @@ import com.sunhao.graduate_project.domain.Task;
 
 public class TranslateForShowTask {
 
+    /**
+     * 将Task转换为ShowTask
+     * @param template
+     * @return
+     */
     public static ShowTask translate(Task template) {
         ShowTask showTask = new ShowTask();
 

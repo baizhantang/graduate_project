@@ -3,6 +3,9 @@ package com.sunhao.graduate_project.domain;
 import java.sql.Date;
 import java.time.LocalDate;
 
+/**
+ * 返回给前端的任务记录数据，通过相关工具把Task转换为ShowTask
+ */
 public class ShowTask {
     private String taskNumber;
     private String taskName;

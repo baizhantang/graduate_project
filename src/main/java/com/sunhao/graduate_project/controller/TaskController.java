@@ -19,6 +19,16 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    /**
+     * 添加任务记录
+     * @param name
+     * @param describe
+     * @param deadline
+     * @param template
+     * @param person
+     * @param response
+     * @throws IOException
+     */
     @PostMapping(value = "/addTask")
     public void addTask(@RequestParam("name") String name,
                      @RequestParam("describe") String describe,
@@ -29,6 +39,15 @@ public class TaskController {
         taskService.saveTask(name, describe, deadline, template, person, response);
     }
 
+    /**
+     * 学生上传文件
+     * @param taskNumber
+     * @param studentNumber
+     * @param describe
+     * @param homework
+     * @param response
+     * @throws IOException
+     */
     @PostMapping(value = "/uploadFile")
     public void uploadFile(@RequestParam("taskNumber") String taskNumber,
                            @RequestParam("studentNumber") String studentNumber,

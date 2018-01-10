@@ -18,6 +18,11 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+    /**
+     * 完成上传文件
+     * @param file
+     * @return
+     */
     @PostMapping(value = "/save")
     public Object savePhoto(@RequestParam("file")MultipartFile file) {
 
