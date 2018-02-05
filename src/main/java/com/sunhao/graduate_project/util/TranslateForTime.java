@@ -10,7 +10,6 @@ public class TranslateForTime {
      * 把前端传回的时间数据转换为MySQL的date格式
      */
     private Map<String, String> month = new HashMap<>();
-    private String suffix = " 23:59:59";
 
     {
         month.put("January", "01");
@@ -34,7 +33,6 @@ public class TranslateForTime {
         String replaceStr = inputTime.substring(indexOfFirstSpace+1, indexOfLastSpace);
         inputTime = inputTime.replace(replaceStr, month.get(replaceStr));
         inputTime = inputTime.replace(' ', '-');
-//        inputTime += suffix;
 
         Date result = Date.valueOf(inputTime);
         return result;

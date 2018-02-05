@@ -40,6 +40,7 @@ public class GraduateProjectApplication extends SpringBootServletInitializer imp
 	public MultipartConfigElement multipartConfigElement(){
 		MultipartConfigFactory factory = new MultipartConfigFactory();
 		//设置上传文件大小限制
+
 		factory.setMaxFileSize("250MB");
 		//设置上传总数据大小
 		factory.setMaxRequestSize("250MB");

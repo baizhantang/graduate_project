@@ -2,9 +2,10 @@ package com.sunhao.graduate_project.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.sunhao.graduate_project.domain.ShowTask;
-import com.sunhao.graduate_project.domain.Task;
-import com.sunhao.graduate_project.repository.TaskRepository;
+import com.sunhao.graduate_project.entity.ShowTask;
+import com.sunhao.graduate_project.entity.Task;
+import com.sunhao.graduate_project.repository.TaskRepo;
+import com.sunhao.graduate_project.util.JSONUtil;
 import com.sunhao.graduate_project.util.TranslateForShowTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,10 @@ import java.util.Map;
 public class SearchTaskService {
 
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskRepo taskRepo;
 
-    public Object getTask(String teacherName) {
-        List<Task> data = taskRepository.findTaskByTeacherName(teacherName);
+    public Object getTask(String teacherUserName) {
+        List<Task> data = taskRepo.findTaskByTeacherName(teacherUserName);
         Map<String, List<ShowTask>> result = new HashMap<>();
 
         List<ShowTask> befores = new ArrayList<>();
@@ -38,8 +39,8 @@ public class SearchTaskService {
             }
         }
 
-        result.put("fail", befores);
-        result.put("processing", afters);
+        result.put("pastDue", befores);
+        result.put("inProgress", afters);
 
         String resultS = JSON.toJSONString(result);
 
@@ -47,77 +48,127 @@ public class SearchTaskService {
         return resultJ;
     }
 
-    public Object getHistoryTask(String teacherName) {
-        List<Task> data = taskRepository.findHistoryTaskByTeacherName(teacherName);
+    public Object getHistoryTask(String teacherUserName) {
+        List<Task> data = taskRepo.findHistoryTaskByTeacherName(teacherUserName);
         Map<String, List<ShowTask>> result = new HashMap<>();
-        List<ShowTask> translate = new ArrayList<>();
+        List<ShowTask> inValid = new ArrayList<>();
+        List<ShowTask> past = new ArrayList<>();
 
+        //根据任务状态是完成还是失效分开
         for (Task temp :
                 data) {
-            translate.add(TranslateForShowTask.translate(temp));
+            if (temp.getTaskStatus().equals("past")) {
+                past.add(TranslateForShowTask.translate(temp));
+            } else {
+                inValid.add(TranslateForShowTask.translate(temp));
+            }
         }
 
-        result.put("his", translate);
+        result.put("past", past);
+        result.put("inValid", inValid);
 
         String resultS = JSON.toJSONString(result);
 
-        JSONObject resultJ = JSON.parseObject(resultS);
+        JSON resultJ = (JSON) JSON.parse(resultS);
         return resultJ;
     }
 
     public Object getTaskInfo(String taskNumber) {
-        List<Task> data = taskRepository.findByTaskNumber(taskNumber);
+        List<Task> data = taskRepo.findAllByTaskNumber(taskNumber);
         Map<String, List<ShowTask>> result = new HashMap<>();
 
-        List<ShowTask> success = new ArrayList<>();
-        List<ShowTask> nodata = new ArrayList<>();
+        List<ShowTask> done = new ArrayList<>();
+        List<ShowTask> toDo = new ArrayList<>();
+        List<ShowTask> past = new ArrayList<>();
+        List<ShowTask> inValid = new ArrayList<>();
+
 
         for (Task temp :
-                data) { //判断返回的结果数据是否上传了数据，分开封装返回
-            if (temp.getTaskStatus() != null) {
-                success.add(TranslateForShowTask.translate(temp));
-            } else {
-                nodata.add(TranslateForShowTask.translate(temp));
+                data) {
+            switch (temp.getTaskStatus()) {
+                case "toDo": {
+                    toDo.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
+                case "done": {
+                    done.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
+                case "past": {
+                    past.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
+                case "inValid": {
+                    inValid.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
             }
         }
 
-        result.put("successed", success);
-        result.put("nodata", nodata);
+        result.put("toDo", toDo);
+        result.put("done", done);
+        result.put("past", past);
+        result.put("inValid", inValid);
 
         String resultS = JSON.toJSONString(result);
 
-        JSONObject resultJ = JSON.parseObject(resultS);
+        JSON resultJ = (JSON) JSON.parse(resultS);
+        return resultJ;
+    }
+
+    public Object getTaskByStudent(String studentNumber) {
+        List<Task> data = taskRepo.findAllByStudentNumber(studentNumber);
+        Map<String, List<ShowTask>> result = new HashMap<>();
+
+        List<ShowTask> done = new ArrayList<>();
+        List<ShowTask> toDo = new ArrayList<>();
+        List<ShowTask> past = new ArrayList<>();
+        List<ShowTask> inValid = new ArrayList<>();
+
+
+        for (Task temp :
+                data) {
+            switch (temp.getTaskStatus()) {
+                case "toDo": {
+                    toDo.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
+                case "done": {
+                    done.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
+                case "past": {
+                    past.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
+                case "inValid": {
+                    inValid.add(TranslateForShowTask.translate(temp));
+                    break;
+                }
+            }
+        }
+
+        result.put("toDo", toDo);
+        result.put("done", done);
+        result.put("past", past);
+        result.put("inValid", inValid);
+
+        String resultS = JSON.toJSONString(result);
+
+        JSON resultJ = (JSON) JSON.parse(resultS);
         return resultJ;
 
     }
 
-    public Object getTaskByStudent(String studentNumber) {
-        List<Task> data = taskRepository.findByStudentNumber(studentNumber);
-        System.out.println(data);
-        Map<String, List<ShowTask>> result = new HashMap<>();
-
-        List<ShowTask> success = new ArrayList<>();
-        List<ShowTask> nodata = new ArrayList<>();
-
-        for (Task temp :
-                data) {
-            if (temp.getTaskStatus() != null) {
-                success.add(TranslateForShowTask.translate(temp));
-            } else {
-                nodata.add(TranslateForShowTask.translate(temp));
-            }
+    public Object getAnswer(String taskNumber, String studentNumber) {
+        Task task = taskRepo.findByTaskNumberAndStudentNumber(taskNumber, studentNumber);
+        if (task == null) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "没查到相关记录"};
+            return JSONUtil.getJSON(key, value);
         }
 
-        result.put("successed", success);
-        result.put("nodata", nodata);
-
-        System.out.println(nodata);
-
-        String resultS = JSON.toJSONString(result);
-
-        JSONObject resultJ = JSON.parseObject(resultS);
-        return resultJ;
-
+        return TranslateForShowTask.translate(task);
     }
 
 }

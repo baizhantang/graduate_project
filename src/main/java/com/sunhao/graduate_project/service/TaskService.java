@@ -1,66 +1,79 @@
 package com.sunhao.graduate_project.service;
 
-import com.sunhao.graduate_project.domain.Task;
-import com.sunhao.graduate_project.repository.TaskRepository;
+import com.alibaba.fastjson.JSON;
+import com.sunhao.graduate_project.entity.StudentGroup;
+import com.sunhao.graduate_project.entity.Task;
+import com.sunhao.graduate_project.repository.GroupRepo;
+import com.sunhao.graduate_project.repository.TaskRepo;
+import com.sunhao.graduate_project.util.JSONUtil;
 import com.sunhao.graduate_project.util.TranslateForTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.File;
+import javax.transaction.Transactional;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import static java.lang.Integer.*;
 
 @Service
+@Transactional
 public class TaskService {
+    @Autowired
+    private TaskRepo taskRepo;
 
     @Autowired
-    private TaskRepository taskRepository;
+    private GroupRepo groupRepo;
 
-    @Autowired
-    private ExcelService excelService;
-
-    @Autowired
-    private FileService fileService;
-
-    private static final String hostname = "120.79.141.175"; //服务器环境
-//    private static final String hostname = "localhost"; //本地环境
-
-    public void saveTask(String name,
+    /**
+     * 发布任务
+     * @param name
+     * @param describe
+     * @param deadline
+     * @param question
+     * @param studentsID
+     * @param response
+     * @throws IOException
+     */
+    public Object saveTask(String name,
                          String describe,
                          String deadline,
-                         MultipartFile template,
-                         MultipartFile persons,
+                         String question,
+                         String teacherName,
+                         String teacherUserName,
+                         String studentsID,
                          HttpServletResponse response) throws IOException {
         response.setContentType("text/html; charset=UTF-8");
-        List<Map<String, String>> personList;
 
-        PrintWriter out = response.getWriter();
+        String taskNumber = UUID.randomUUID().toString().replace("-", "");
+        StudentGroup returnStudents = groupRepo.findOne(parseInt(studentsID));
+        if (returnStudents == null) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "学生信息没有查到"};
+            return JSONUtil.getJSON(key, value);
+        }
+        List<Map<String, String>> personList = (List<Map<String, String>>) JSON.parse(returnStudents.getStudents());
 
-        String taskNumber = UUID.randomUUID().toString();
-        personList = excelService.excelParse(persons);
-        if (personList == null) {
-            returnFail(out, "file error", "addTask.html");
-            return;
+        //利用set的属性判断学号是否重复
+        Set<String> stuNum = new HashSet<>();
+        for (Map<String, String> p :
+                personList) {
+            stuNum.add(p.get("学号"));
         }
-        String path = fileService.saveFile(template);
-        if (path == null) {
-            returnFail(out, "file error", "addTask.html");
-            return;
+        if (stuNum.size() != personList.size()) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "学号出错"};
+            return JSONUtil.getJSON(key, value);
         }
+
         Date date = new TranslateForTime().translate(deadline);
         Date dateCurrent = new Date(new java.util.Date().getTime());
         if (date.before(dateCurrent)) {
-            returnFail(out, "time error", "addTask.html");
-            return;
+            String[] key = {"isSuccess","msg"};
+            String[] value = {"false","时间错误"};
+            return JSONUtil.getJSON(key, value);
         }
 
         for (Map<String, String> person:
@@ -70,66 +83,73 @@ public class TaskService {
             task.setTaskName(name);
             task.setTaskDescribe(describe);
             task.setDeadline(date);
+            task.setTeacherUserName(teacherUserName);
             task.setStudentName(person.get("姓名"));
             task.setStudentNumber(person.get("学号"));
-            task.setTemplatePath(path);
-            task.setTeacherName("孙昊");
+            task.setQuestion(question.replace(" ", ""));
+            task.setTeacherName(teacherName);
             task.setCreateTime(dateCurrent);
+            task.setTaskStatus("toDo");
 
-            taskRepository.save(task);
+            taskRepo.save(task);
         }
 
-        returnSuccess(out, "history.html");
-        return;
+        String[] key = {"isSuccess"};
+        String[] value = {"true"};
+        return JSONUtil.getJSON(key, value);
     }
 
-    public void saveFile(String taskNumber,
-                         String studentNumber,
-                         String describe,
-                         MultipartFile homework,
-                         HttpServletResponse response) throws IOException {
-        response.setContentType("text/html; charset=UTF-8");
+    public Object setInvalid(String taskNumber) {
+        List<Task> returnT = taskRepo.findAllByTaskNumber(taskNumber);
+        if (returnT.isEmpty()) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "没有相关记录"};
+            return JSONUtil.getJSON(key, value);
+        }
+        for (Task t :
+                returnT) {
+            t.setTaskStatus("inValid");
+        }
+        String[] key = {"isSuccess"};
+        String[] value = {"true"};
+        return JSONUtil.getJSON(key, value);
+    }
 
-        PrintWriter out = response.getWriter();
-
-        String path = fileService.saveFile(homework);
-        if (path == null) {
-            out.flush();
-            out.println("alert('file error!');");
-            out.println("window.location.href = 'http://" + hostname + "/studentIndex.html?studentNumber=" + studentNumber + "';");
-            out.println("</script>");
-            return;
+    public Object giveAnswer(String taskNumber, String studentNumber, String answer, String describe) {
+        answer = answer.replace(" ", "");
+        Task task = taskRepo.findByTaskNumberAndStudentNumber(taskNumber, studentNumber);
+        if (task == null) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "没查到相关任务记录"};
+            return JSONUtil.getJSON(key, value);
         }
 
-        Task task = taskRepository.findByTaskNumberAndStudentNumber(taskNumber, studentNumber);
+        switch (task.getTaskStatus()) {
+            case "toDo":
+            case "done": {
+                task.setRemark(describe);
+                task.setAnswer(answer);
+                task.setTaskStatus("done");
 
-        System.out.println(task);
-        task.setRemark(describe);
-        task.setResultPath(path);
-        task.setTaskStatus("ok");
-        taskRepository.save(task);
-
-        out.flush();
-        out.println("<script type='text/javascript'>");
-        out.println("alert('success!');");
-        out.println("window.location.href = 'http://" + hostname + "/studentIndex.html?studentNumber=" + task.getStudentNumber() + "';");
-        out.println("</script>");
-        return;
-    }
-
-    public void returnSuccess(PrintWriter out, String destination) {
-        out.flush();
-        out.println("<script type='text/javascript'>");
-        out.println("alert('success!');");
-        out.println("window.location.href = 'http://" + hostname + "/" + destination + "';");
-        out.println("</script>");
-    }
-
-    public void returnFail(PrintWriter out, String failType, String destination) {
-        out.flush();
-        out.println("<script type='text/javascript'>");
-        out.println("alert('" + failType + "!');");
-        out.println("window.location.href = 'http://" + hostname + "/" + destination + "';");
-        out.println("</script>");
+                taskRepo.save(task);
+                String[] key = {"isSuccess"};
+                String[] value = {"true"};
+                return JSONUtil.getJSON(key, value);
+            }
+            case "past": {
+                String[] key = {"isSuccess", "msg"};
+                String[] value = {"false", "任务已经完成"};
+                return JSONUtil.getJSON(key, value);
+            }
+            case "inValid": {
+                String[] key = {"isSuccess", "msg"};
+                String[] value = {"false", "任务已经关闭"};
+                return JSONUtil.getJSON(key, value);
+            }
+            default:
+                String[] key = {"isSuccess"};
+                String[] value = {"false"};
+                return JSONUtil.getJSON(key, value);
+        }
     }
 }

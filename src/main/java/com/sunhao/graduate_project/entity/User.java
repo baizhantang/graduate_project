@@ -1,4 +1,4 @@
-package com.sunhao.graduate_project.domain;
+package com.sunhao.graduate_project.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

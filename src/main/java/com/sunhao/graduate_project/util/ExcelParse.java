@@ -29,7 +29,7 @@ public class ExcelParse {
             int lastRow = sheet.getLastRowNum();
             //除去表头和第一行
             for (int i = firstRow + 1; i < lastRow + 1; i++) {
-                Map map = new HashMap();
+                Map<String, String> map = new HashMap();
 
                 HSSFRow row = sheet.getRow(i);
                 int firstCell = row.getFirstCellNum();

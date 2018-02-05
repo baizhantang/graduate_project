@@ -24,36 +24,46 @@ public class TaskController {
      * @param name
      * @param describe
      * @param deadline
-     * @param template
-     * @param person
+     * @param students
      * @param response
      * @throws IOException
      */
-    @PostMapping(value = "/addTask")
-    public void addTask(@RequestParam("name") String name,
+    @PostMapping("/addTask")
+    public Object addTask(@RequestParam("name") String name,
                      @RequestParam("describe") String describe,
                      @RequestParam("deadline") String deadline,
-                     @RequestParam("template") MultipartFile template,
-                     @RequestParam("person") MultipartFile person,
+                     @RequestParam("question") String question,
+                     @RequestParam("teacherUserName") String teacherUserName,
+                     @RequestParam("teacherName") String teacherName,
+                     @RequestParam("students") String students,
                      HttpServletResponse response) throws IOException {
-        taskService.saveTask(name, describe, deadline, template, person, response);
+        return taskService.saveTask(name, describe, deadline, question, teacherName, teacherUserName, students, response);
     }
 
     /**
-     * 学生上传文件
+     * 设置为失效，教师操作关闭任务的时候使用
+     * @param taskNumber
+     * @return
+     */
+    @PostMapping("/setInvalid")
+    public Object setInvalid(@RequestParam("taskNumber") String taskNumber) {
+        return taskService.setInvalid(taskNumber);
+    }
+
+    /**
+     * 完成任务
      * @param taskNumber
      * @param studentNumber
      * @param describe
-     * @param homework
-     * @param response
-     * @throws IOException
+     * @param answer
+     * @return
      */
-    @PostMapping(value = "/uploadFile")
-    public void uploadFile(@RequestParam("taskNumber") String taskNumber,
-                           @RequestParam("studentNumber") String studentNumber,
-                           @RequestParam("describe") String describe,
-                           @RequestParam("homework") MultipartFile homework,
-                           HttpServletResponse response) throws IOException {
-        taskService.saveFile(taskNumber, studentNumber, describe, homework, response);
+    @PostMapping("/giveAnswer")
+    public Object giveAnswer(@RequestParam("taskNumber") String taskNumber,
+                             @RequestParam("studentNumber") String studentNumber,
+                             @RequestParam("describe") String describe,
+                             @RequestParam("answer") String answer) {
+        return taskService.giveAnswer(taskNumber, studentNumber, answer, describe);
     }
+
 }

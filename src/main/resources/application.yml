@@ -9,6 +9,6 @@ spring:
     username: root
     password: Sh_951753.
 server:
-  port: 80
-  context-path: /graduate_project
-#  context-path: /
+  port: 8080
+#  context-path: /graduate_project
+  context-path: /

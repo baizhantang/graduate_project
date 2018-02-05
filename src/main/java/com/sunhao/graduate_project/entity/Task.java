@@ -1,10 +1,9 @@
-package com.sunhao.graduate_project.domain;
+package com.sunhao.graduate_project.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.sql.Date;
-import java.sql.Timestamp;
 
 @Entity
 public class Task {
@@ -14,17 +13,26 @@ public class Task {
     private String taskNumber;
     private String taskName;
     private String taskDescribe;
-    private String templatePath;
-    private String resultPath;
+    private String teacherUserName;
     private String teacherName;
     private String studentName;
     private String studentNumber;
     private Date deadline;
     private Date createTime;
     private String taskStatus;
+    private String question;
+    private String answer;
     private String remark;
 
     public Task() {
+    }
+
+    public String getTeacherUserName() {
+        return teacherUserName;
+    }
+
+    public void setTeacherUserName(String teacherUserName) {
+        this.teacherUserName = teacherUserName;
     }
 
     public String getTeacherName() {
@@ -67,14 +75,6 @@ public class Task {
         this.taskDescribe = taskDescribe;
     }
 
-    public String getTemplatePath() {
-        return templatePath;
-    }
-
-    public void setTemplatePath(String templatePath) {
-        this.templatePath = templatePath;
-    }
-
     public String getStudentName() {
         return studentName;
     }
@@ -115,19 +115,27 @@ public class Task {
         this.createTime = createTime;
     }
 
-    public String getResultPath() {
-        return resultPath;
-    }
-
-    public void setResultPath(String resultPath) {
-        this.resultPath = resultPath;
-    }
-
     public String getRemark() {
         return remark;
     }
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }

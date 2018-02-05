@@ -1,6 +1,5 @@
-package com.sunhao.graduate_project.domain;
+package com.sunhao.graduate_project.entity;
 
-import java.sql.Date;
 import java.time.LocalDate;
 
 /**
@@ -10,13 +9,14 @@ public class ShowTask {
     private String taskNumber;
     private String taskName;
     private String taskDescribe;
-    private String templatePath;
+    private String teacherUserName;
     private String teacherName;
     private LocalDate deadline;
     private String studentName;
     private String studentNumber;
-    private String doStatus;
-    private String resultPath;
+    private String taskStatus;
+    private String question;
+    private String answer;
     private String remark;
 
     public ShowTask() {
@@ -36,14 +36,6 @@ public class ShowTask {
 
     public void setTaskDescribe(String taskDescribe) {
         this.taskDescribe = taskDescribe;
-    }
-
-    public String getTemplatePath() {
-        return templatePath;
-    }
-
-    public void setTemplatePath(String templatePath) {
-        this.templatePath = templatePath;
     }
 
     public String getTeacherName() {
@@ -86,27 +78,43 @@ public class ShowTask {
         this.studentNumber = studentNumber;
     }
 
-    public String getDoStatus() {
-        return doStatus;
-    }
-
-    public void setDoStatus(String doStatus) {
-        this.doStatus = doStatus;
-    }
-
-    public String getResultPath() {
-        return resultPath;
-    }
-
-    public void setResultPath(String resultPath) {
-        this.resultPath = resultPath;
-    }
-
     public String getRemark() {
         return remark;
     }
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getTeacherUserName() {
+        return teacherUserName;
+    }
+
+    public void setTeacherUserName(String teacherUserName) {
+        this.teacherUserName = teacherUserName;
+    }
+
+    public String getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 }

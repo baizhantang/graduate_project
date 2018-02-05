@@ -1,7 +1,7 @@
 package com.sunhao.graduate_project.util;
 
-import com.sunhao.graduate_project.domain.ShowTask;
-import com.sunhao.graduate_project.domain.Task;
+import com.sunhao.graduate_project.entity.ShowTask;
+import com.sunhao.graduate_project.entity.Task;
 
 public class TranslateForShowTask {
 
@@ -17,13 +17,14 @@ public class TranslateForShowTask {
         showTask.setTaskDescribe(template.getTaskDescribe());
         showTask.setTeacherName(template.getTeacherName());
         showTask.setDeadline(template.getDeadline().toLocalDate());
-        showTask.setTemplatePath(template.getTemplatePath());
         showTask.setTaskNumber(template.getTaskNumber());
         showTask.setStudentName(template.getStudentName());
         showTask.setStudentNumber(template.getStudentNumber());
-        showTask.setDoStatus(template.getTaskStatus());
-        showTask.setResultPath(template.getResultPath());
+        showTask.setTaskStatus(template.getTaskStatus());
         showTask.setRemark(template.getRemark());
+        showTask.setQuestion(template.getQuestion());
+        showTask.setAnswer(template.getAnswer());
+        showTask.setTeacherUserName(template.getTeacherUserName());
 
         return showTask;
     }
