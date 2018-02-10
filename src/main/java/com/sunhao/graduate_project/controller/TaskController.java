@@ -34,10 +34,9 @@ public class TaskController {
                      @RequestParam("deadline") String deadline,
                      @RequestParam("question") String question,
                      @RequestParam("teacherUserName") String teacherUserName,
-                     @RequestParam("teacherName") String teacherName,
                      @RequestParam("students") String students,
                      HttpServletResponse response) throws IOException {
-        return taskService.saveTask(name, describe, deadline, question, teacherName, teacherUserName, students, response);
+        return taskService.saveTask(name, describe, deadline, question, teacherUserName, students, response);
     }
 
     /**

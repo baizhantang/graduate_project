@@ -5,15 +5,15 @@ import com.sunhao.graduate_project.entity.StudentGroup;
 import com.sunhao.graduate_project.entity.Task;
 import com.sunhao.graduate_project.repository.GroupRepo;
 import com.sunhao.graduate_project.repository.TaskRepo;
+import com.sunhao.graduate_project.repository.UserRepo;
 import com.sunhao.graduate_project.util.JSONUtil;
-import com.sunhao.graduate_project.util.TranslateForTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static java.lang.Integer.*;
@@ -23,6 +23,9 @@ import static java.lang.Integer.*;
 public class TaskService {
     @Autowired
     private TaskRepo taskRepo;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @Autowired
     private GroupRepo groupRepo;
@@ -41,7 +44,6 @@ public class TaskService {
                          String describe,
                          String deadline,
                          String question,
-                         String teacherName,
                          String teacherUserName,
                          String studentsID,
                          HttpServletResponse response) throws IOException {
@@ -68,8 +70,8 @@ public class TaskService {
             return JSONUtil.getJSON(key, value);
         }
 
-        Date date = new TranslateForTime().translate(deadline);
-        Date dateCurrent = new Date(new java.util.Date().getTime());
+        Timestamp date = Timestamp.valueOf(deadline);
+        Timestamp dateCurrent = new Timestamp(new java.util.Date().getTime());
         if (date.before(dateCurrent)) {
             String[] key = {"isSuccess","msg"};
             String[] value = {"false","时间错误"};
@@ -87,7 +89,7 @@ public class TaskService {
             task.setStudentName(person.get("姓名"));
             task.setStudentNumber(person.get("学号"));
             task.setQuestion(question.replace(" ", ""));
-            task.setTeacherName(teacherName);
+            task.setTeacherName(userRepo.findByUsername(teacherUserName).getName());
             task.setCreateTime(dateCurrent);
             task.setTaskStatus("toDo");
 

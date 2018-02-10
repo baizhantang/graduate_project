@@ -25,8 +25,8 @@ public class UserService {
             String[] value = {"true"};
             return JSONUtil.getJSON(key, value);
         } else {
-            String[] key = {"isSuccess"};
-            String[] value = {"false"};
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "账号信息无效"};
             return JSONUtil.getJSON(key, value);
         }
     }
@@ -45,8 +45,8 @@ public class UserService {
             String[] value = {"true"};
             return JSONUtil.getJSON(key, value);
         } else {
-            String[] key = {"isSuccess"};
-            String[] value = {"false"};
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "用户已经存在"};
             return JSONUtil.getJSON(key, value);
         }
     }

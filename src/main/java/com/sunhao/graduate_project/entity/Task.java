@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 public class Task {
@@ -17,8 +18,8 @@ public class Task {
     private String teacherName;
     private String studentName;
     private String studentNumber;
-    private Date deadline;
-    private Date createTime;
+    private Timestamp deadline;
+    private Timestamp createTime;
     private String taskStatus;
     private String question;
     private String answer;
@@ -91,28 +92,12 @@ public class Task {
         this.studentNumber = studentNumber;
     }
 
-    public Date getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
-    }
-
     public String getTaskStatus() {
         return taskStatus;
     }
 
     public void setTaskStatus(String taskStatus) {
         this.taskStatus = taskStatus;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
     }
 
     public String getRemark() {
@@ -137,5 +122,21 @@ public class Task {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public Timestamp getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(Timestamp deadline) {
+        this.deadline = deadline;
+    }
+
+    public Timestamp getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 }

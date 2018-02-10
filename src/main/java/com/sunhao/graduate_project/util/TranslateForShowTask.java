@@ -3,6 +3,9 @@ package com.sunhao.graduate_project.util;
 import com.sunhao.graduate_project.entity.ShowTask;
 import com.sunhao.graduate_project.entity.Task;
 
+import java.sql.Date;
+
+
 public class TranslateForShowTask {
 
     /**
@@ -16,7 +19,7 @@ public class TranslateForShowTask {
         showTask.setTaskName(template.getTaskName());
         showTask.setTaskDescribe(template.getTaskDescribe());
         showTask.setTeacherName(template.getTeacherName());
-        showTask.setDeadline(template.getDeadline().toLocalDate());
+        showTask.setDeadline(new Date(template.getDeadline().getTime()).toLocalDate());
         showTask.setTaskNumber(template.getTaskNumber());
         showTask.setStudentName(template.getStudentName());
         showTask.setStudentNumber(template.getStudentNumber());
