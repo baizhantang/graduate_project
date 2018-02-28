@@ -9,4 +9,6 @@ public interface GroupRepo extends JpaRepository<StudentGroup, Integer> {
     List<StudentGroup> findAllByTeacherUserName(String teacherUserName);
 
     List<StudentGroup> findAllById(int id);
+
+    void deleteAllByTeacherUserName(String teacherUserName);
 }

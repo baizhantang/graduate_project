@@ -10,13 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.Writer;
+import java.util.*;
 
 @Service
+@Transactional
 public class GroupService {
 
     @Autowired
@@ -24,6 +25,8 @@ public class GroupService {
 
     @Autowired
     private GroupRepo groupRepo;
+
+    private final String path = "http://127.0.0.1:8020/myProject/";
 
     /**
      * 处理文件导入的学生组信息
@@ -33,26 +36,34 @@ public class GroupService {
      * @return
      * @throws IOException
      */
-    public Object createGroup(String teacherUserName, String groupName, MultipartFile students) throws IOException {
+    public void createGroup(String teacherUserName, String groupName, MultipartFile students, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html; charset=UTF-8");
         //解析人员名单
         List<Map<String, String>> personList = excelService.excelParse(students);
-        if (personList.isEmpty()) {
-            String[] key = {"isSuccess", "msg"};
-            String[] value = {"false", "人员名单出错"};
-            return JSONUtil.getJSON(key, value);
+        if (personList==null || personList.isEmpty()) {
+            myDIYResponse(response, path+"groupManager.html", "暂时无法解析您的文件");
+        } else {
+            //利用set的属性判断学号是否重复
+            Set<String> stuNum = new HashSet<>();
+            for (Map<String, String> p :
+                    personList) {
+                stuNum.add(p.get("学号"));
+            }
+            if (stuNum.size() != personList.size()) {
+                myDIYResponse(response, path+"groupManager.html", "其实学号是不允许重复的");
+            } else {
+                //生成人员组信息
+                StudentGroup studentGroup = new StudentGroup();
+                studentGroup.setGroupName(groupName);
+                studentGroup.setTeacherUserName(teacherUserName);
+                studentGroup.setStudents(JSON.toJSONString(personList).replace(" ", ""));
+                studentGroup.setStudentNumber(personList.size());
+                groupRepo.save(studentGroup);
+
+                //返回成功信息
+                myDIYResponse(response, path + "groupManager.html");
+            }
         }
-
-        //生成人员组信息
-        StudentGroup studentGroup = new StudentGroup();
-        studentGroup.setGroupName(groupName);
-        studentGroup.setTeacherUserName(teacherUserName);
-        studentGroup.setStudents(JSON.toJSONString(personList).replace(" ", ""));
-        groupRepo.save(studentGroup);
-
-        //返回成功信息
-        String[] key = {"isSuccess"};
-        String[] value = {"true"};
-        return JSONUtil.getJSON(key, value);
     }
 
     /**
@@ -70,7 +81,7 @@ public class GroupService {
 
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("isSuccess", "true");
-        returnMap.put("returnData", studentGroups);
+        returnMap.put("groups", studentGroups);
         return returnMap;
     }
 
@@ -92,6 +103,27 @@ public class GroupService {
         group.setTeacherUserName(teacherUserName);
         group.setStudents(JSON.toJSONString(inputStudents));
         groupRepo.save(group);
+
+        //返回结果
+        String[] key = {"isSuccess"};
+        String[] value = {"true"};
+        return JSONUtil.getJSON(key, value);
+    }
+
+    //提示错误信息并且跳转页面
+    private void myDIYResponse(HttpServletResponse response, String path, String msg) throws IOException {
+        Writer writer = response.getWriter();
+        writer.write("<script type='text/javascript'>alert('" + msg + "');window.location.href = '" + path + "';</script>");
+    }
+    //直接跳转页面
+    private void myDIYResponse(HttpServletResponse response, String path) throws IOException {
+        Writer writer = response.getWriter();
+        writer.write("<script type='text/javascript'>window.location.href = '" + path + "';</script>");
+    }
+
+    //清空群组
+    public Object cleanGroup(String teacherUserName) {
+        groupRepo.deleteAllByTeacherUserName(teacherUserName);
 
         //返回结果
         String[] key = {"isSuccess"};

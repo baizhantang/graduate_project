@@ -50,4 +50,25 @@ public class UserService {
             return JSONUtil.getJSON(key, value);
         }
     }
+
+//    查询用户信息
+    public User getUserInfo(String teahcerUserName) {
+        return userRepo.findByUsername(teahcerUserName);
+    }
+
+//    修改密码
+    public Object updatePassword(String username, String oldP, String newP) {
+        User user = userRepo.findByUsername(username);
+        if (user != null && user.getPassword().equals(oldP)) {
+            user.setPassword(newP);
+            userRepo.save(user);
+            String[] key = {"isSuccess"};
+            String[] value = {"true"};
+            return JSONUtil.getJSON(key, value);
+        } else {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "原密码错误"};
+            return JSONUtil.getJSON(key, value);
+        }
+    }
 }

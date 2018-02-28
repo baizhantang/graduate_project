@@ -58,18 +58,6 @@ public class TaskService {
         }
         List<Map<String, String>> personList = (List<Map<String, String>>) JSON.parse(returnStudents.getStudents());
 
-        //利用set的属性判断学号是否重复
-        Set<String> stuNum = new HashSet<>();
-        for (Map<String, String> p :
-                personList) {
-            stuNum.add(p.get("学号"));
-        }
-        if (stuNum.size() != personList.size()) {
-            String[] key = {"isSuccess", "msg"};
-            String[] value = {"false", "学号出错"};
-            return JSONUtil.getJSON(key, value);
-        }
-
         Timestamp date = Timestamp.valueOf(deadline);
         Timestamp dateCurrent = new Timestamp(new java.util.Date().getTime());
         if (date.before(dateCurrent)) {
@@ -103,7 +91,7 @@ public class TaskService {
 
     public Object setInvalid(String taskNumber) {
         List<Task> returnT = taskRepo.findAllByTaskNumber(taskNumber);
-        if (returnT.isEmpty()) {
+        if (returnT == null || returnT.isEmpty()) {
             String[] key = {"isSuccess", "msg"};
             String[] value = {"false", "没有相关记录"};
             return JSONUtil.getJSON(key, value);

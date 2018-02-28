@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class SearchTaskController {
+public class
+SearchTaskController {
 
     @Autowired
     private SearchTaskService searchTaskService;

@@ -10,6 +10,7 @@ public class StudentGroup {
     @Id
     @GeneratedValue
     private int id;
+    private int studentNumber;
     private String teacherUserName;
     private String groupName;
     private String students;
@@ -47,5 +48,13 @@ public class StudentGroup {
 
     public void setStudents(String students) {
         this.students = students;
+    }
+
+    public int getStudentNumber() {
+        return studentNumber;
+    }
+
+    public void setStudentNumber(int studentNumber) {
+        this.studentNumber = studentNumber;
     }
 }
