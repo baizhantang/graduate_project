@@ -65,4 +65,11 @@ public class TaskController {
         return taskService.giveAnswer(taskNumber, studentNumber, answer, describe);
     }
 
+
+    @PostMapping("/exportFile")
+    public Object exportFile(@RequestParam("taskNumber") String taskNumber,
+                             HttpServletResponse response) throws IOException {
+        return taskService.exportFile(taskNumber, response);
+    }
+
 }

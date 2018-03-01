@@ -7,12 +7,18 @@ import com.sunhao.graduate_project.repository.GroupRepo;
 import com.sunhao.graduate_project.repository.TaskRepo;
 import com.sunhao.graduate_project.repository.UserRepo;
 import com.sunhao.graduate_project.util.JSONUtil;
+import netscape.javascript.JSUtil;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -141,5 +147,61 @@ public class TaskService {
                 String[] value = {"false"};
                 return JSONUtil.getJSON(key, value);
         }
+    }
+
+    public Object exportFile(String taskNumber, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html; charset=UTF-8");
+
+        List<Task> returnT = taskRepo.findAllByTaskNumberAndTaskStatus(taskNumber, "done");
+        if (returnT == null || returnT.isEmpty()) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "无有效数据"};
+            return JSONUtil.getJSON(key, value);
+        }
+
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        String question = returnT.get(0).getQuestion();
+        List<Map<String, String>> nav = (List<Map<String, String>>) JSON.parse(question);
+        HSSFSheet sheet = workbook.createSheet("统计信息");
+        HSSFRow row = sheet.createRow(0);
+        int i = 0;
+        for (Map<String, String> n :
+                nav) {
+            row.createCell(i).setCellValue(n.get("title"));
+            i++;
+        }
+
+        i = 1;
+        int count = 0;
+        HSSFRow dataRow = null;
+        for (Task t :
+                returnT) {
+            dataRow = sheet.createRow(i);
+            String answer = t.getAnswer();
+            List<Map<String, String>> data = (List<Map<String, String>>) JSON.parse(answer);
+            if (data.size() > count) {
+                count = data.size();
+            }
+            int j = 0;
+            for (Map<String, String> cellData :
+                    data) {
+                dataRow.createCell(j).setCellValue(cellData.get("answer"));
+                j++;
+            }
+            i++;
+        }
+
+        for (int j = 0; j < count; j++) {
+            sheet.autoSizeColumn(j);
+        }
+
+        String path = "C:/Users/Administrator/Desktop/apache-tomcat-9.0.4/webapps/ROOT/file/" + returnT.get(0).getTaskName() + new Date().getTime() + ".xls";
+        String relative = "file/" + returnT.get(0).getTaskName() + new Date().getTime() + ".xls";
+        workbook.write(new File(path));
+
+        String[] key = {"isSuccess", "path"};
+        String[] value = {"true", relative};
+        System.out.println(JSONUtil.getJSON(key, value));
+        return JSONUtil.getJSON(key, value);
     }
 }

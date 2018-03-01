@@ -20,5 +20,5 @@ public interface TaskRepo extends JpaRepository<Task, Integer> {
 
     Task findByTaskNumberAndStudentNumber(String taskNumber, String studentNumber);
 
-
+    List<Task> findAllByTaskNumberAndTaskStatus(String taskNumber, String done);
 }

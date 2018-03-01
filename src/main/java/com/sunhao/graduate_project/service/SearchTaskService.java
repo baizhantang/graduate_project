@@ -171,4 +171,13 @@ public class SearchTaskService {
         return TranslateForShowTask.translate(task);
     }
 
+    public Object getQuestion(String studentNumber, String taskNumber) {
+        Task task = taskRepo.findByTaskNumberAndStudentNumber(taskNumber, studentNumber);
+        if (task == null) {
+            return null;
+        }
+        String question = task.getQuestion();
+        List<Map<String, String>> returnQ = (List<Map<String, String>>) JSON.parse(question);
+        return returnQ;
+    }
 }

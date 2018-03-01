@@ -1,6 +1,7 @@
 package com.sunhao.graduate_project.controller;
 
 import com.sunhao.graduate_project.service.SearchTaskService;
+import com.sunhao.graduate_project.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,5 +66,11 @@ SearchTaskController {
     public Object getAnswer(@RequestParam("taskNumber") String taskNumber,
                             @RequestParam("studentNumber") String studentNumber) {
         return searchTaskService.getAnswer(taskNumber, studentNumber);
+    }
+
+    @PostMapping("/getQuestion")
+    public Object getQuestion(@RequestParam("studentNumber") String studentNumber,
+                            @RequestParam("taskNumber") String taskNumber) {
+        return searchTaskService.getQuestion(studentNumber, taskNumber);
     }
 }
