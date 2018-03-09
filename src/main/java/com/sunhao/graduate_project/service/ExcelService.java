@@ -1,6 +1,9 @@
 package com.sunhao.graduate_project.service;
 
 import com.sunhao.graduate_project.util.ExcelParse;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,13 +26,21 @@ public class ExcelService {
         }
 
         int indexSuffix = excelFile.getOriginalFilename().indexOf('.');
+        Workbook workbook;
         if (!"xls".equals(excelFile.getOriginalFilename().substring(indexSuffix+1))) {
-            String result = "文件类型错误";
-            return null;
+            if (!"xlsx".equals(excelFile.getOriginalFilename().substring(indexSuffix+1))) {
+                String result = "文件类型错误";
+                return null;
+            } else {
+                InputStream fis = excelFile.getInputStream();
+                workbook = new XSSFWorkbook(fis);
+            }
+        } else {
+            InputStream fis = excelFile.getInputStream();
+            workbook = new HSSFWorkbook(fis);
         }
 
-        InputStream fis = excelFile.getInputStream();
-        List<Map<String, String>> data = ExcelParse.parseExcel(fis); //调用工具类进行解析
+        List<Map<String, String>> data = ExcelParse.parseExcel(workbook); //调用工具类进行解析
 
         return data;
     }

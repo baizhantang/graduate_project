@@ -7,7 +7,6 @@ import com.sunhao.graduate_project.repository.GroupRepo;
 import com.sunhao.graduate_project.repository.TaskRepo;
 import com.sunhao.graduate_project.repository.UserRepo;
 import com.sunhao.graduate_project.util.JSONUtil;
-import netscape.javascript.JSUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -17,8 +16,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -197,7 +196,8 @@ public class TaskService {
 
         String path = "C:/Users/Administrator/Desktop/apache-tomcat-9.0.4/webapps/ROOT/file/" + returnT.get(0).getTaskName() + new Date().getTime() + ".xls";
         String relative = "file/" + returnT.get(0).getTaskName() + new Date().getTime() + ".xls";
-        workbook.write(new File(path));
+        FileOutputStream outputStream = new FileOutputStream(new File(path));
+        workbook.write(outputStream);
 
         String[] key = {"isSuccess", "path"};
         String[] value = {"true", relative};
