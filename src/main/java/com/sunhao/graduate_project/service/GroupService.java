@@ -73,15 +73,24 @@ public class GroupService {
      */
     public Object findAllGroupByTeacherUserName(String teacherUserName) {
         List<StudentGroup> studentGroups = groupRepo.findAllByTeacherUserName(teacherUserName);
-        if (studentGroups.isEmpty()) {
+        if (studentGroups == null || studentGroups.isEmpty()) {
             String[] key = {"isSuccess","msg"};
             String[] value = {"false", "没查到相关信息"};
             return JSONUtil.getJSON(key, value);
         }
 
+        Map<String, Object> translateM = new HashMap<>();
+        List<Map<String, Object>> returnL = new ArrayList<>();
+        for (StudentGroup studentGroup : studentGroups) {
+            translateM.put("groupName", studentGroup.getGroupName());
+            translateM.put("studentNumber", studentGroup.getStudentNumber());
+            translateM.put("students", JSON.parse(studentGroup.getStudents()));
+            returnL.add(translateM);
+        }
+
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("isSuccess", "true");
-        returnMap.put("groups", studentGroups);
+        returnMap.put("groups", returnL);
         return returnMap;
     }
 
