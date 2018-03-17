@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.sql.Timestamp;
 
 @Entity
 public class StudentGroup {
@@ -14,6 +15,7 @@ public class StudentGroup {
     private String teacherUserName;
     private String groupName;
     private String students;
+    private Timestamp createTime;
 
     public StudentGroup() {
     }
@@ -56,5 +58,13 @@ public class StudentGroup {
 
     public void setStudentNumber(int studentNumber) {
         this.studentNumber = studentNumber;
+    }
+
+    public Timestamp getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 }

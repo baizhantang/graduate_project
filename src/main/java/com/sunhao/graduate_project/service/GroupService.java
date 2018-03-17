@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -58,6 +59,7 @@ public class GroupService {
                 studentGroup.setTeacherUserName(teacherUserName);
                 studentGroup.setStudents(JSON.toJSONString(personList).replace(" ", ""));
                 studentGroup.setStudentNumber(personList.size());
+                studentGroup.setCreateTime(new Timestamp(new Date().getTime()));
                 groupRepo.save(studentGroup);
 
                 //返回成功信息
@@ -79,14 +81,18 @@ public class GroupService {
             return JSONUtil.getJSON(key, value);
         }
 
-        Map<String, Object> translateM = new HashMap<>();
         List<Map<String, Object>> returnL = new ArrayList<>();
         for (StudentGroup studentGroup : studentGroups) {
+            Map<String, Object> translateM = new HashMap<>();
+            String time = studentGroup.getCreateTime().toString();
+            translateM.put("createTime", time.substring(0, time.length()-2));
             translateM.put("groupName", studentGroup.getGroupName());
             translateM.put("studentNumber", studentGroup.getStudentNumber());
             translateM.put("students", JSON.parse(studentGroup.getStudents()));
             returnL.add(translateM);
         }
+
+        System.out.println(returnL);
 
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("isSuccess", "true");
