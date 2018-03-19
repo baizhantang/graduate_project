@@ -7,6 +7,7 @@ import com.sunhao.graduate_project.entity.StudentGroup;
 import com.sunhao.graduate_project.repository.GroupRepo;
 import com.sunhao.graduate_project.util.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +28,8 @@ public class GroupService {
     @Autowired
     private GroupRepo groupRepo;
 
-    private final String path = "http://127.0.0.1:8020/myProject/";
+    @Value("${path}")
+    String path;
 
     /**
      * 处理文件导入的学生组信息
@@ -84,8 +86,14 @@ public class GroupService {
         List<Map<String, Object>> returnL = new ArrayList<>();
         for (StudentGroup studentGroup : studentGroups) {
             Map<String, Object> translateM = new HashMap<>();
-            String time = studentGroup.getCreateTime().toString();
-            translateM.put("createTime", time.substring(0, time.length()-2));
+            String time = null;
+            try {
+                time = studentGroup.getCreateTime().toString();
+                translateM.put("createTime", time.substring(0, time.length()-2));
+            } catch (java.lang.NullPointerException e) {
+                translateM.put("createTime", "无记录");
+            }
+            translateM.put("id", studentGroup.getId());
             translateM.put("groupName", studentGroup.getGroupName());
             translateM.put("studentNumber", studentGroup.getStudentNumber());
             translateM.put("students", JSON.parse(studentGroup.getStudents()));

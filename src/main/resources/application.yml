@@ -12,3 +12,4 @@ server:
   port: 8080
 #  context-path: /graduate_project
   context-path: /
+path: "http://127.0.0.1:8020/myProject/"

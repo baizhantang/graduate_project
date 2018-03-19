@@ -176,8 +176,12 @@ public class SearchTaskService {
         if (task == null) {
             return null;
         }
+
+        Map<String, Object> returnD = new HashMap<>();
         String question = task.getQuestion();
         List<Map<String, String>> returnQ = (List<Map<String, String>>) JSON.parse(question);
-        return returnQ;
+        returnD.put("question", returnQ);
+        returnD.put("taskDescribe", task.getTaskDescribe());
+        return returnD;
     }
 }

@@ -68,6 +68,12 @@ SearchTaskController {
         return searchTaskService.getAnswer(taskNumber, studentNumber);
     }
 
+    /**
+     * 获取某个任务的问题和描述
+     * @param studentNumber
+     * @param taskNumber
+     * @return
+     */
     @PostMapping("/getQuestion")
     public Object getQuestion(@RequestParam("studentNumber") String studentNumber,
                             @RequestParam("taskNumber") String taskNumber) {
