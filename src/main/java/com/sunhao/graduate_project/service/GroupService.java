@@ -28,7 +28,7 @@ public class GroupService {
     @Autowired
     private GroupRepo groupRepo;
 
-    @Value("${path}")
+    @Value("${sitePath}")
     String path;
 
     /**

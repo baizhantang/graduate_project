@@ -12,4 +12,8 @@ server:
   port: 8080
 #  context-path: /graduate_project
   context-path: /
-path: "http://127.0.0.1:8020/myProject/"
+
+sitePath: "http://localhost:63343/graduate_project/"
+#path: "http://www.khdxs.xyz/"
+filePath: "/Users/sunhao/Desktop/graduate_project/file/"
+#filePath: "C:/Users/Administrator/Desktop/apache-tomcat-9.0.4/webapps/ROOT/file/"

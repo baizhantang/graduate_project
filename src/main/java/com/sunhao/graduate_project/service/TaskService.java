@@ -11,6 +11,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +35,9 @@ public class TaskService {
 
     @Autowired
     private GroupRepo groupRepo;
+
+    @Value("${filePath}")
+    private String configPath;
 
     /**
      * 发布任务
@@ -164,6 +168,8 @@ public class TaskService {
         HSSFSheet sheet = workbook.createSheet("统计信息");
         HSSFRow row = sheet.createRow(0);
         int i = 0;
+        row.createCell(i++).setCellValue("姓名");
+        row.createCell(i++).setCellValue("学号");
         for (Map<String, String> n :
                 nav) {
             row.createCell(i).setCellValue(n.get("title"));
@@ -182,6 +188,8 @@ public class TaskService {
                 count = data.size();
             }
             int j = 0;
+            dataRow.createCell(j++).setCellValue(t.getStudentName());
+            dataRow.createCell(j++).setCellValue(t.getStudentNumber());
             for (Map<String, String> cellData :
                     data) {
                 dataRow.createCell(j).setCellValue(cellData.get("answer"));
@@ -194,7 +202,7 @@ public class TaskService {
             sheet.autoSizeColumn(j);
         }
 
-        String path = "C:/Users/Administrator/Desktop/apache-tomcat-9.0.4/webapps/ROOT/file/" + returnT.get(0).getTaskName() + new Date().getTime() + ".xls";
+        String path = configPath + returnT.get(0).getTaskName() + new Date().getTime() + ".xls";
         String relative = "file/" + returnT.get(0).getTaskName() + new Date().getTime() + ".xls";
         FileOutputStream outputStream = new FileOutputStream(new File(path));
         workbook.write(outputStream);
