@@ -5,7 +5,7 @@ spring:
     show-sql: true
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/graduate_project?useSSL=false
+    url: jdbc:mysql://localhost:3306/graduate_project?useSSL=true
     username: root
     password: Sh_951753.
 server:
@@ -13,7 +13,8 @@ server:
 #  context-path: /graduate_project
   context-path: /
 
-sitePath: "http://localhost:63343/graduate_project/"
-#path: "http://www.khdxs.xyz/"
-filePath: "/Users/sunhao/Desktop/graduate_project/file/"
+sitePath: "http://localhost:63343/myProject/"
+#sitePath: "https://www.khdxs.xyz/"
+#filePath: "/Users/sunhao/Desktop/graduate_project/file/"
 #filePath: "C:/Users/Administrator/Desktop/apache-tomcat-9.0.4/webapps/ROOT/file/"
+filePath: "C:/Users/33244/Desktop/file/"

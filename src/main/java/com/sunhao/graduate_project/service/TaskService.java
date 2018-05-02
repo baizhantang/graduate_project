@@ -1,6 +1,7 @@
 package com.sunhao.graduate_project.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sunhao.graduate_project.entity.StudentGroup;
 import com.sunhao.graduate_project.entity.Task;
 import com.sunhao.graduate_project.repository.GroupRepo;
@@ -41,25 +42,26 @@ public class TaskService {
 
     /**
      * 发布任务
-     * @param name
-     * @param describe
-     * @param deadline
-     * @param question
-     * @param studentsID
+     * @param taskInfo
      * @param response
      * @throws IOException
      */
-    public Object saveTask(String name,
-                         String describe,
-                         String deadline,
-                         String question,
-                         String teacherUserName,
-                         String studentsID,
+    public Object saveTask(String taskInfo,
                          HttpServletResponse response) throws IOException {
         response.setContentType("text/html; charset=UTF-8");
 
+        JSONObject jsonObject;
+        try {
+            jsonObject = JSONObject.parseObject(taskInfo);
+        } catch (Exception e) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "参数出错"};
+            return JSONUtil.getJSON(key, value);
+        }
+
+
         String taskNumber = UUID.randomUUID().toString().replace("-", "");
-        StudentGroup returnStudents = groupRepo.findOne(parseInt(studentsID));
+        StudentGroup returnStudents = groupRepo.findOne(jsonObject.getInteger("students"));
         if (returnStudents == null) {
             String[] key = {"isSuccess", "msg"};
             String[] value = {"false", "学生信息没有查到"};
@@ -67,7 +69,7 @@ public class TaskService {
         }
         List<Map<String, String>> personList = (List<Map<String, String>>) JSON.parse(returnStudents.getStudents());
 
-        Timestamp date = Timestamp.valueOf(deadline);
+        Timestamp date = Timestamp.valueOf(jsonObject.getString("deadline"));
         Timestamp dateCurrent = new Timestamp(new java.util.Date().getTime());
         if (date.before(dateCurrent)) {
             String[] key = {"isSuccess","msg"};
@@ -79,16 +81,17 @@ public class TaskService {
              personList) {
             Task task = new Task();
             task.setTaskNumber(taskNumber);
-            task.setTaskName(name);
-            task.setTaskDescribe(describe);
+            task.setTaskName(jsonObject.getString("name"));
+            task.setTaskDescribe(jsonObject.getString("describe"));
             task.setDeadline(date);
-            task.setTeacherUserName(teacherUserName);
+            task.setTeacherUserName(jsonObject.getString("teacherUserName"));
             task.setStudentName(person.get("姓名"));
             task.setStudentNumber(person.get("学号"));
-            task.setQuestion(question.replace(" ", ""));
-            task.setTeacherName(userRepo.findByUsername(teacherUserName).getName());
+            task.setQuestion(jsonObject.getString("question").replace(" ", ""));
+            task.setTeacherName(userRepo.findByUsername(jsonObject.getString("teacherUserName")).getName());
             task.setCreateTime(dateCurrent);
             task.setTaskStatus("toDo");
+            task.setOperation("toDo");
 
             taskRepo.save(task);
         }
@@ -107,7 +110,7 @@ public class TaskService {
         }
         for (Task t :
                 returnT) {
-            t.setTaskStatus("inValid");
+            t.setOperation("invalid");
         }
         String[] key = {"isSuccess"};
         String[] value = {"true"};
@@ -211,5 +214,38 @@ public class TaskService {
         String[] value = {"true", relative};
         System.out.println(JSONUtil.getJSON(key, value));
         return JSONUtil.getJSON(key, value);
+    }
+
+    public Object setSuccess(String taskNumber) {
+        List<Task> returnT = taskRepo.findAllByTaskNumber(taskNumber);
+        if (returnT == null || returnT.isEmpty()) {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "没有相关记录"};
+            return JSONUtil.getJSON(key, value);
+        }
+
+        //判断是否可以完成任务，没有学生提交任务时不可以完成任务
+        Boolean isValid = false;
+        for (Task t :
+                returnT) {
+            if (!t.getTaskStatus().equals("toDo")) {
+                isValid = true;
+                break;
+            }
+        }
+
+        if (isValid) {
+            for (Task t :
+                    returnT) {
+                t.setOperation("success");
+            }
+            String[] key = {"isSuccess"};
+            String[] value = {"true"};
+            return JSONUtil.getJSON(key, value);
+        } else {
+            String[] key = {"isSuccess", "msg"};
+            String[] value = {"false", "不存在有效数据，暂不可完成任务"};
+            return JSONUtil.getJSON(key, value);
+        }
     }
 }

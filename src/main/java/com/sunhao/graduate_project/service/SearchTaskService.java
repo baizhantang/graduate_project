@@ -1,6 +1,7 @@
 package com.sunhao.graduate_project.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sunhao.graduate_project.entity.ShowTask;
 import com.sunhao.graduate_project.entity.Task;
@@ -19,6 +20,7 @@ import java.util.Map;
 @Service
 public class SearchTaskService {
 
+    public static final String TO_DO = "toDo";
     @Autowired
     private TaskRepo taskRepo;
 
@@ -57,9 +59,9 @@ public class SearchTaskService {
         //根据任务状态是完成还是失效分开
         for (Task temp :
                 data) {
-            if (temp.getTaskStatus().equals("past")) {
+            if (temp.getOperation().equals("success")) {
                 past.add(TranslateForShowTask.translate(temp));
-            } else {
+            } else if (temp.getOperation().equals("invalid")){
                 inValid.add(TranslateForShowTask.translate(temp));
             }
         }
@@ -79,35 +81,12 @@ public class SearchTaskService {
 
         List<ShowTask> done = new ArrayList<>();
         List<ShowTask> toDo = new ArrayList<>();
-        List<ShowTask> past = new ArrayList<>();
         List<ShowTask> inValid = new ArrayList<>();
 
-
-        for (Task temp :
-                data) {
-            switch (temp.getTaskStatus()) {
-                case "toDo": {
-                    toDo.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
-                case "done": {
-                    done.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
-                case "past": {
-                    past.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
-                case "inValid": {
-                    inValid.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
-            }
-        }
+        taskFilter(data, toDo, done, inValid);
 
         result.put("toDo", toDo);
         result.put("done", done);
-        result.put("past", past);
         result.put("inValid", inValid);
 
         String resultS = JSON.toJSONString(result);
@@ -122,36 +101,16 @@ public class SearchTaskService {
 
         List<ShowTask> done = new ArrayList<>();
         List<ShowTask> toDo = new ArrayList<>();
-        List<ShowTask> past = new ArrayList<>();
         List<ShowTask> inValid = new ArrayList<>();
 
-
-        for (Task temp :
+        for (Task t :
                 data) {
-            switch (temp.getTaskStatus()) {
-                case "toDo": {
-                    toDo.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
-                case "done": {
-                    done.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
-                case "past": {
-                    past.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
-                case "inValid": {
-                    inValid.add(TranslateForShowTask.translate(temp));
-                    break;
-                }
+            if (t.getTaskStatus().equals(TO_DO) && t.getOperation().equals(TO_DO)) {
+                toDo.add(TranslateForShowTask.translate(t));
             }
         }
 
         result.put("toDo", toDo);
-        result.put("done", done);
-        result.put("past", past);
-        result.put("inValid", inValid);
 
         String resultS = JSON.toJSONString(result);
 
@@ -183,5 +142,31 @@ public class SearchTaskService {
         returnD.put("question", returnQ);
         returnD.put("taskDescribe", task.getTaskDescribe());
         return returnD;
+    }
+
+    private void taskFilter(List<Task> data,
+                               List<ShowTask> toDo,
+                               List<ShowTask> done,
+                               List<ShowTask> inValid) {
+        for (Task temp :
+                data) {
+            if (temp.getOperation().equals("invalid")) {
+                inValid.add(TranslateForShowTask.translate(temp));
+            } else {
+                switch (temp.getTaskStatus()) {
+                    case "toDo": {
+                        toDo.add(TranslateForShowTask.translate(temp));
+                        break;
+                    }
+                    case "done": {
+                        done.add(TranslateForShowTask.translate(temp));
+                        break;
+                    }
+                    default: {
+                        System.out.println("任务状态出现了不可预期的错误");
+                    }
+                }
+            }
+        }
     }
 }

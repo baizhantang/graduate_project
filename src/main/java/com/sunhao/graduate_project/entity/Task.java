@@ -24,6 +24,7 @@ public class Task {
     private String question;
     private String answer;
     private String remark;
+    private String operation;
 
     public Task() {
     }
@@ -138,5 +139,13 @@ public class Task {
 
     public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 }

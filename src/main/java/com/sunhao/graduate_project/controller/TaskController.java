@@ -21,22 +21,14 @@ public class TaskController {
 
     /**
      * 添加任务记录
-     * @param name
-     * @param describe
-     * @param deadline
-     * @param students
+     * @param taskInfo
      * @param response
      * @throws IOException
      */
     @PostMapping("/addTask")
-    public Object addTask(@RequestParam("name") String name,
-                     @RequestParam("describe") String describe,
-                     @RequestParam("deadline") String deadline,
-                     @RequestParam("question") String question,
-                     @RequestParam("teacherUserName") String teacherUserName,
-                     @RequestParam("students") String students,
-                     HttpServletResponse response) throws IOException {
-        return taskService.saveTask(name, describe, deadline, question, teacherUserName, students, response);
+    public Object addTask(@RequestParam("taskInfo") String taskInfo,
+                          HttpServletResponse response) throws IOException {
+        return taskService.saveTask(taskInfo, response);
     }
 
     /**
@@ -47,6 +39,16 @@ public class TaskController {
     @PostMapping("/setInvalid")
     public Object setInvalid(@RequestParam("taskNumber") String taskNumber) {
         return taskService.setInvalid(taskNumber);
+    }
+
+    /**
+     * 设置为成功，教师操作完成任务的时候使用
+     * @param taskNumber
+     * @return
+     */
+    @PostMapping("/setSuccess")
+    public Object setSuccess(@RequestParam("taskNumber") String taskNumber) {
+        return taskService.setSuccess(taskNumber);
     }
 
     /**

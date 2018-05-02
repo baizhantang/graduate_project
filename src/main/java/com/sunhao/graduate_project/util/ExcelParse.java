@@ -31,7 +31,8 @@ public class ExcelParse {
             for (int j = firstCell; j < lastCell; j++) {
 
                 Cell cell2 = sheet.getRow(firstRow).getCell(j);
-                cell2.setCellType(1);//CellType.STRING
+                //CellType.STRING
+                cell2.setCellType(1);
                 String key = cell2.getStringCellValue();
                 key = DIYReplaceSpace(key);
 
@@ -48,9 +49,7 @@ public class ExcelParse {
 
             }
             data.add(map);
-//                System.out.println(map);
         }
-//            System.out.println(data);
         return data;
     }
 
